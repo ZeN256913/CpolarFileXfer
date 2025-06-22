@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件传输 - 下载中心</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @theme {
+            --color-primary: #4361ee;
+            --color-secondary: #3f37c9;
+            --color-accent: #4895ef;
+            --color-dark: #1d3557;
+            --color-light: #f8f9fa;
+            --font-inter: 'Inter', sans-serif;
+        }
+        
+        @utility smooth-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        @utility card-shadow {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        
+        @utility card-shadow-hover {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        body {
+            font-family: var(--font-inter);
+        }
+        
+        .file-row:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="bg-primary text-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold">
+                        <i class="fas fa-cloud-download-alt mr-3"></i>文件传输中心
+                    </h1>
+                    <p class="text-light/80 mt-2">快速下载共享文件</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:block">
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+                            <i class="fas fa-wifi mr-1"></i> 局域网共享
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- IP信息卡片 -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8 smooth-transition hover:card-shadow-hover">
+            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">连接信息</h2>
+                    <p class="text-gray-600">请使用以下地址访问本共享服务</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input type="text" id="ipAddress" value="{{ ip }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" readonly>
+                            <button id="copyButton" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded-lg hover:bg-secondary smooth-transition">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary smooth-transition">
+                        <i class="fas fa-refresh mr-1"></i> 刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件列表 -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8 smooth-transition hover:card-shadow-hover">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold">可下载文件</h2>
+                <div class="mt-3 md:mt-0 flex items-center space-x-3">
+                    <div class="relative">
+                        <input type="text" placeholder="搜索文件..." class="px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="relative">
+                        <select class="px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none">
+                            <option>所有文件</option>
+                            <option>文档</option>
+                            <option>图片</option>
+                            <option>视频</option>
+                            <option>音频</option>
+                            <option>压缩包</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+
+            {% if files %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <i class="fas fa-file-alt mr-2"></i> 文件名
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <i class="fas fa-hdd mr-2"></i> 大小
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <i class="fas fa-calendar-alt mr-2"></i> 修改时间
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <i class="fas fa-download mr-2"></i> 操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for i, file in enumerate(files) %}
+                        <tr class="file-row smooth-transition hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-file {{ get_file_icon(file.name) }} text-lg"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ file.name }}</div>
+                                        <div class="text-sm text-gray-500">{{ get_file_extension(file.name) }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ file.size }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ get_formatted_date(file.path) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="/download/{{ i }}" class="text-primary hover:text-secondary smooth-transition">
+                                    <i class="fas fa-download mr-1"></i> 下载
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            <div class="mt-8 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    显示 <span class="font-medium">1</span> 到 <span class="font-medium">{{ files|length }}</span> 条，共 <span class="font-medium">{{ files|length }}</span> 条
+                </div>
+                <div class="flex space-x-1">
+                    <button class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 smooth-transition disabled:opacity-50" disabled>
+                        <i class="fas fa-chevron-left text-xs"></i>
+                    </button>
+                    <button class="px-3 py-1 rounded-md border border-primary bg-primary text-white smooth-transition">1</button>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 smooth-transition">2</button>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 smooth-transition">3</button>
+                    <span class="px-3 py-1 text-gray-500">...</span>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 smooth-transition">
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="flex flex-col items-center justify-center py-12">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-folder-open text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">暂无可下载的文件</h3>
+                <p class="text-gray-500 text-center max-w-md">请联系文件共享者获取更多文件</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 关于 -->
+        <div class="bg-white rounded-xl card-shadow p-6 smooth-transition hover:card-shadow-hover">
+            <h2 class="text-xl font-semibold mb-4">关于文件传输服务</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="text-primary text-3xl mb-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="font-medium mb-2">安全可靠</h3>
+                    <p class="text-gray-600 text-sm">所有文件传输均在本地网络完成，保护您的隐私安全</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg">
+                    <div class="text-green-600 text-3xl mb-3">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="font-medium mb-2">高速传输</h3>
+                    <p class="text-gray-600 text-sm">利用本地网络高速传输，比云服务更快更稳定</p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-lg">
+                    <div class="text-purple-600 text-3xl mb-3">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="font-medium mb-2">多平台支持</h3>
+                    <p class="text-gray-600 text-sm">支持Windows、Mac、iOS、Android等多种设备</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <p class="text-sm text-gray-400">© {{ current_year }} 1am6da 保留所有权利.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white smooth-transition">
+                        <i class="fab fa-github text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 复制IP地址到剪贴板
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const ipAddress = document.getElementById('ipAddress');
+            ipAddress.select();
+            document.execCommand('copy');
+            
+            // 显示复制成功提示
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i> 已复制';
+            this.classList.add('bg-green-500');
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('bg-green-500');
+            }, 2000);
+        });
+
+        // 文件类型图标映射
+        function get_file_icon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            switch(ext) {
+                case 'txt': case 'doc': case 'docx': case 'pdf': case 'rtf':
+                    return 'alt';
+                case 'jpg': case 'jpeg': case 'png': case 'gif': case 'bmp': case 'svg':
+                    return 'image';
+                case 'mp4': case 'avi': case 'mkv': case 'mov': case 'wmv':
+                    return 'video';
+                case 'mp3': case 'wav': case 'ogg': case 'aac': case 'm4a':
+                    return 'audio';
+                case 'zip': case 'rar': case '7z': case 'tar': case 'gz':
+                    return 'archive';
+                case 'exe': case 'app': case 'dmg': case 'msi':
+                    return 'executable';
+                default:
+                    return 'file';
+            }
+        }
+
+        // 获取文件扩展名
+        function get_file_extension(filename) {
+            return filename.split('.').pop().toUpperCase() || '未知文件';
+        }
+
+        // 格式化文件修改时间
+        function get_formatted_date(filepath) {
+            const date = new Date(); // 实际应用中应使用文件的实际修改时间
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // 获取当前年份
+        function get_current_year() {
+            return new Date().getFullYear();
+        }
+    </script>
+</body>
+</html>
