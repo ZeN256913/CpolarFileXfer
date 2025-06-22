@@ -33,10 +33,3 @@ CpolarFileXfer 是一个基于 Flask 和 Tkinter 的跨平台文件传输工具�
 - Tkinter (Python GUI 库)
 - cpolar (可选，用于外网访问)
 
-### 安装步骤
-
-1. 克隆项目到本地：
-
-```bash
-git clone https://github.com/Zen256913/CpolarFileXfer.git
-cd CpolarFileXfer
