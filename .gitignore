@@ -1,0 +1,93 @@
+# =============================
+# Python 项目通用忽略规则
+# =============================
+# 虚拟环境
+venv/
+.venv/
+env/
+.conda/
+__pypackages__/
+
+# 编译文件
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+
+# 日志和缓存
+logs/
+*.log
+.cache/
+.pytest_cache/
+
+# 配置文件（敏感信息）
+.env
+config.json  # 项目配置（如包含敏感信息，建议忽略）
+client_config.json  # 客户端配置
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# =============================
+# 开发工具和 IDE 忽略规则
+# =============================
+# VS Code
+.vscode/
+.vs/
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================
+# 项目特定忽略规则
+# =============================
+# 上传和下载的文件
+uploads/  # 服务器上传目录
+downloads/  # 客户端下载目录
+
+# 临时文件
+temp/
+*.bak
+*.swp
+
+# 构建和打包文件
+dist/
+build/
+*.egg
+*.whl
+
+# 文档构建输出
+docs/_build/
+docs/generated/
+
+# =============================
+# 测试和覆盖率报告
+# =============================
+.coverage
+coverage.xml
+htmlcov/
+
+# =============================
+# 示例文件（如果不需要提交）
+# =============================
+example.*
+sample.*
+
+# =============================
+# 自定义忽略（可根据项目需求修改）
+# =============================
+# 保留配置文件模板，但忽略实际配置
+config.json.template  # 保留模板
+!config.json.template  # 确保模板被提交
+
+# 保留 .env 示例，但忽略实际 .env
+.env.example  # 保留示例
+!*.env.example  # 确保示例被提交
