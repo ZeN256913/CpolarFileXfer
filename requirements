@@ -1,0 +1,35 @@
+# CpolarFileXfer 项目依赖
+# 主要框架和库
+Flask==2.3.2          # Web 框架
+Flask-WTF==1.1.1      # 表单处理
+Flask-Session==0.4.0  # 会话管理
+Flask-Cors==4.0.0     # 跨域资源共享
+Werkzeug==2.3.6       # WSGI 工具集
+
+# 网络和 HTTP
+requests==2.31.0      # HTTP 请求库
+gunicorn==20.1.0      # WSGI 服务器
+waitress==2.1.2       # Windows 服务器
+pycryptodome==3.18.0  # 加密库（用于文件加密）
+
+# GUI 相关
+Pillow==10.0.0        # 图像处理（用于预览）
+tk==0.1.0             # Tkinter 绑定
+
+# 文件和系统
+python-dotenv==1.0.0  # 环境变量管理
+python-magic==0.4.27  # 文件类型检测
+watchdog==3.0.0       # 文件系统监控
+paramiko==3.3.1       # SSH 客户端（可选，用于远程操作）
+
+# 开发和测试
+pytest==7.4.0         # 测试框架
+coverage==7.2.7       # 测试覆盖率
+flake8==6.0.0         # 代码风格检查
+black==23.7.0         # 代码格式化
+isort==5.12.0         # 导入排序
+
+# 部署和 CI/CD
+docker==6.1.3         # Docker API
+gitpython==3.1.32     # Git 操作
+invoke==2.2.0         # 自动化任务
